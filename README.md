@@ -1,8 +1,8 @@
-[![Gitter](https://badges.gitter.im/smu405/s.svg)](https://gitter.im/smu405/s?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![Gitter](https://badges.gitter.im/smu405e/community.svg)](https://gitter.im/smu405e/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 # Smart Contract
 
-* 최종수정일 20190305화
+* 최종수정일 20200316MON
 
 ## 교과목 개요
 비트코인에서 블록체인은 데이터저장소로 활용되었다. 최근에 블록체인은 프로그램을 할 수 있는 플랫폼으로 발전하고 있다. 블록체인의 안전성을 강화하는 필수적인
@@ -76,5 +76,4 @@
     ```
 
 ## end
-
 
