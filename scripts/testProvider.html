@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+
+<head>
+<script src="https://cdn.jsdelivr.net/npm/web3@1.2.5/dist/web3.min.js"></script>
+<!-- script src="https://cdn.jsdelivr.net/npm/web3@0.20.5/dist/web3.min.js"></script -->
+</head>
+
+<body>
+<button onclick="myFunction()">Click me to see the coinbase.</button>
+<p id="conn"></p>
+<p id="coin"></p>
+
+<script>
+    if (window.ethereum) {
+        window.web3 = new Web3(window.ethereum); //window.ethereum is a provider itself
+        document.getElementById("conn").innerHTML = "connected to MetaMask!";
+    } else if (typeof window.web3 !== 'undefined') {
+        window.web3 = new Web3(web3.currentProvider);
+        document.getElementById("conn").innerHTML = "connected to currentProvider";
+    } else {
+        window.web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:8345"));
+        document.getElementById("conn").innerHTML = "connected to Local Host";
+    }
+    
+    //async function myFunction() {
+    //    const account = await web3.eth.getAccounts();
+    //    document.getElementById("coin").innerHTML = "coinbase: " + account[0];
+    //}
+    async function myFunction() { // no need to be this way with ethereum.request
+        if(window.ethereum) {
+            accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+        } else {
+            accounts = await web3.eth.getAccounts();
+        }
+        document.getElementById("coin").innerHTML = "coinbase: " + accounts[0];
+    }
+
+</script>
+
+</body>
+</html>

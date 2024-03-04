@@ -1,0 +1,78 @@
+<!doctype html>
+<!-- @author: jsl @since: 20200428-->
+<html>
+
+<head>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/web3@1.2.5/dist/web3.min.js"></script>
+<script type="text/javascript">
+    //var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8345"));
+    var web3=new Web3(new Web3.providers.WebsocketProvider("ws://localhost:8345"));
+    var coinbase;
+    async function watchBalance() {
+        //var coinbase = web3.eth.coinbase; // old web3 0.2x
+        //const coinbase = await web3.eth.getCoinbase();
+        const accounts = await web3.eth.getAccounts();
+        coinbase = accounts[0];
+        console.log("Coinbase: " + coinbase);
+
+        var originalBalance = await web3.eth.getBalance(coinbase);
+        document.getElementById('coinbase').innerText = 'coinbase: ' + coinbase;
+        document.getElementById('original').innerText = ' original balance: ' + originalBalance + '    watching...';
+
+        //web3.eth.filter('latest').watch(function() { // old web3 0.2x
+        
+        //let subscription = web3.eth.subscribe("logs", {
+        //    fromBlock:0,
+        //    toBlock:'latest',
+        //    address: [coinbase],    //Only get events from specific addresses
+        //    topics: [web3.utils.sha3('Voted(address,uint256)')]
+        //    }, function(err, success) {
+        //let subscription = web3.eth.subscribe('logs', options, function(err, success) {
+        let subscription = web3.eth.subscribe('newBlockHeaders', function(err, bheader) {
+            console.log("=====> subscribe fired!!");
+            if(!err) {
+                console.log("block header --> ", bheader);
+                console.log("header timestamp ---> ", bheader.timestamp);
+                //var currentBalance = await web3.eth.getBalance(coinbase);
+                web3.eth.getBalance(coinbase, function(err, bal) {
+                    if(!err) {
+                        //var weiBal = web3.fromWei(wei, 'ether');
+                        document.getElementById("current").innerText = 'current: ' + bal + ' ETH';
+                        document.getElementById("diff").innerText = 'diff:    ' + (bal - originalBalance);
+                    }
+                });
+            }
+        });
+        //subscription.on('data', function(blockHeader) { console.log(blockHeader) } );
+        //subscription.on('changed', changed => console.log(changed))
+        //subscription.on('error', err => { throw err })
+        subscription.on('connected', function(id) {
+            document.getElementById("conn").innerText = 'connected: ' + id;
+        });
+    }
+                                                
+    async function send() {
+        await web3.eth.sendTransaction({
+            from: coinbase,
+            to: '0x11f4d0A3c12e86B4b5F39B213F7E19D048276DAe',
+            value: '111'
+        })
+        document.getElementById("send").innerHTML = "sent from: " + coinbase + "111";
+    }
+
+</script>
+</head>
+<body>
+    <h1>coinbase balance</h1>
+    <button type="button" onClick="watchBalance();">watch balance</button>
+    <div></div>
+    <div id="coinbase"></div>
+    <div id="original"></div>
+    <div id="current"></div>
+    <div id="diff"></div>
+    <div id="conn"></div>
+    <button onclick="send()">send 111.</button>
+    <div id="send"></div>
+</script>
+</body>
+</html>

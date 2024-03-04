@@ -1,0 +1,66 @@
+<!doctype>
+<html>
+
+<head>
+<script src="https://cdn.jsdelivr.net/npm/web3@1.2.5/dist/web3.min.js"></script>
+<!-- script src="https://cdn.jsdelivr.net/npm/web3@0.20.5/dist/web3.min.js"></script -->
+</head>
+<body>
+<button onclick="myFunction()">---Click me to see the coinbase.</button>
+<p id="coin"></p>
+
+<script>
+console.log('web3 loading')
+
+var Web3=require('web3');
+
+//var web3;
+//if (typeof web3 !== 'undefined') {
+//    web3 = new Web3(web3.currentProvider);
+//} else {
+//    web3 = new Web3(new Web3.providers.HttpProvider("http://117.16.44.45:8345"));
+//}
+
+//window.addEventListener('load', async () => {
+    console.log("----loading");
+ // Wait for loading completion to avoid race conditions with web3 injection timing.
+  if (window.ethereum) {
+    const web3 = new Web3(window.ethereum);
+    console.log('metamask detected1');
+    try {
+      // Request account access if needed
+      await window.ethereum.enable();
+      // Acccounts now exposed
+      return web3;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  // Legacy dapp browsers...
+  else if (window.web3) {
+    // Use Mist/MetaMask's provider.
+    const web3 = window.web3;
+    console.log('Injected web3 detected.');
+    return web3;
+  }
+  // Fallback to localhost; use dev console port by default...
+  else {
+    const provider = new Web3.providers.HttpProvider('http://127.0.0.1:8445');
+    const web3 = new Web3(provider);
+    console.log('No web3 instance injected, using Local web3.');
+    return web3;
+  }
+//});
+
+
+ function myFunction() {
+    const accounts =  web3.eth.getAccounts();
+    //console.log("Deploying the contract from " + accounts[0]);
+    document.getElementById("coin").innerHTML = accounts[0];
+    //var coinbase = web3.eth.accounts[0];
+    //document.getElementById("myid").innerHTML = coinbase;
+}
+</script>
+
+</body>
+</html>

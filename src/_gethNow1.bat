@@ -1,0 +1,1 @@
+geth --identity "jsl" --datadir .\eth1 --rpc --rpcaddr "localhost" --rpcport "8446" --rpccorsdomain "*" --port "38446" --rpcapi "admin, db, eth, debug, miner, net, shh, txpool, personal, web3" --networkid 33 --ipcdisable

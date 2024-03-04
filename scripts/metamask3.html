@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<meta content="utf-8" http-equiv="encoding">
+<html>
+<head>
+    <title>Using web3 API with MetaMask</title>
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.2.5/dist/web3.min.js"></script>
+    <script>
+        window.addEventListener('load', function () {
+            if (window.ethereum) {
+                //window.web3 = new Web3(ethereum);
+                web3 = new Web3(ethereum);
+                ethereum.enable();
+                console.log("Ethereumeee enabled");
+            } else {
+                console.log("Non-Ethereum browser detected. You should consider installing MetaMask.");
+            }
+        });
+
+    async function myFunction() {
+        console.log("myFunction called");
+        const account = await web3.eth.getAccounts();
+        document.getElementById("coin").innerHTML = "coinbase: " + account[0];
+    }
+
+    async function getCoinbase() {
+        try {
+            //const accounts = await ethereum.send('eth_requestAccounts');
+            const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+            document.getElementById("coin").innerHTML = "coinbase: " + accounts[0];
+        } catch (error) {
+            console.warn('User denied account access');
+        }
+    }
+</script>
+</head>
+
+<body>
+<button onclick="myFunction()">Click me to see the coinbase---</button>
+<button onclick="getCoinbase()">Click me to see the coinbase-</button>
+<p id="coin"></p>
+</head>
+</html>

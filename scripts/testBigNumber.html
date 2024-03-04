@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+
+<head>
+<script src="https://cdn.jsdelivr.net/npm/web3@1.2.5/dist/web3.min.js"></script>
+<!-- script type="text/javascript" src="node_modules/bignumber.js/bignumber.min.js"></script -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bignumber.js/9.0.1/bignumber.min.js"></script>
+
+</head>
+
+<body>
+<button onclick="getWEI()">Click me to see the balance.</button>
+<p id="coin"></p>
+<p id="coin0"></p>
+<p id="wei"></p>
+<p id="weiBN"></p>
+<p id="weiBigNumber"></p>
+<p id="weiString"></p>
+<p id="eth"></p>
+
+<script type="text/javascript">
+var web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:8345"));
+
+async function getWEI() {
+    var coinbase = await web3.eth.getCoinbase(); //getCoinbase
+    document.getElementById("coin").innerHTML = "coinbase: " + coinbase;
+
+    const account = await web3.eth.getAccounts();
+    coinbase = account[0];
+    document.getElementById("coin0").innerHTML = "coinbase now from account0: " + coinbase;
+
+    var balanceWei = await web3.eth.getBalance(coinbase);   //already string
+    console.log(balanceWei * (10**10));
+    var balanceWeiBN = web3.utils.toBN(balanceWei);
+    document.getElementById("wei").innerHTML = "wei: " + balanceWei;
+    document.getElementById("weiBN").innerHTML = "wei BN: " + balanceWeiBN*(10**100);
+    document.getElementById("weiBigNumber").innerHTML = "wei BigNumber: " + BigNumber(balanceWeiBN*(10**100));  //already string
+    document.getElementById("weiString").innerHTML = "wei in string: " + balanceWei.toString(); //no need toString
+    var balanceEth = web3.utils.fromWei(balanceWei, 'ether');
+    document.getElementById("eth").innerHTML = "eth: " + balanceEth;
+}
+</script>
+
+</script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="utf-8" http-equiv="encoding">
+    <html>
+    <head>
+        <title>Using web3 API with MetaMask</title>
+        <script src="https://cdn.jsdelivr.net/npm/web3@1.2.5/dist/web3.min.js"></script>
+        <script>
+            window.addEventListener('load', function () {
+                if (window.ethereum) {
+                    window.web3 = new Web3(ethereum);
+                    ethereum.enable()
+                        .then(() => {
+                            console.log("Ethereum enabled");
+    
+                            web3.eth.getAccounts(function (err, acc) {
+                                if (err != null) {
+                                    self.setStatus("There was an error fetching your accounts");
+                                    return;
+                                }
+                                if (acc.length > 0) {
+                                    console.log(acc);
+                                }
+                            });
+                        })
+                        .catch(() => {
+                            console.warn('User didn\'t allow access to accounts.');
+                            waitLogin();
+                        });
+                } else {
+                    console.log("Non-Ethereum browser detected. You should consider installing MetaMask.");
+                }
+            });
+        </script>
+    </head>
+    </html>

@@ -1,0 +1,31 @@
+#Deposit
+def deposit():
+    self.storage[msg.sender] += msg.value
+    return(1)
+
+#Withdraw the given amount (in wei)
+def withdraw(amount):
+    #Check to ensure enough money in account
+    if self.storage[msg.sender] < amount:
+        return(-1)
+    else:
+        #If there is enough money, complete with withdraw
+        self.storage[msg.sender] -= amount
+        send(0, msg.sender, amount)
+        return(1)
+
+#Transfer the given amount (in wei) to the destination’s public key
+def transfer(amount, destination):
+    #Check to ensure enough money in sender’s account
+    if self.storage[msg.sender] < amount:
+        return(-1)
+    else:
+        #If there is enough money, complete the transfer
+        self.storage[msg.sender] -= amount
+        self.storage[destination] += amount
+        return(1)
+
+#Just return the sender’s balance
+def balance():
+    return(self.storage[msg.sender])
+

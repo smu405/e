@@ -1,0 +1,30 @@
+<!doctype>
+<html>
+<head>
+<script src="https://cdn.jsdelivr.net/npm/web3@1.2.5/dist/web3.min.js"></script>
+<!-- script src="https://cdn.jsdelivr.net/npm/web3@0.20.5/dist/web3.min.js"></script -->
+<script type="text/javascript">
+    //var Web3 = require('web3');  //can be removed
+    var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8345"));
+
+    function displayCoinbase() {
+        var web3version = web3.version;  //web3.version.api
+        //web3@0.20.x
+        //document.getElementById('web3ver').innerText = 'web3 version 0.20.x: '+web3version.api;
+        //document.getElementById('web3coinbase').innerText = 'coinbase: ' + web3.eth.coinbase;
+        //web3@1.2.x
+        document.getElementById('web3ver').innerText = 'web3 version: '+web3version;
+        web3.eth.getCoinbase().then(function(coin) {
+            document.getElementById('web3coinbase').innerText = 'coinbase: ' + coin;
+            });
+    }
+</script>
+</head>
+<body>
+    <h1>Hello</h1>
+    <button type="button" onClick="displayCoinbase();">Display Coinbase</button>
+    <div></div>
+    <div id="web3ver"></div>
+    <div id="web3coinbase"></div>
+</body>
+</html>

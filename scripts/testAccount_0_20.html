@@ -1,0 +1,22 @@
+<!doctype>
+<html>
+
+<head>
+<script src="https://cdn.jsdelivr.net/npm/web3@0.20.5/dist/web3.min.js"></script>
+</head>
+
+<body>
+<button onclick="myFunction()">Click me to see the coinbase.</button>
+<p id="coin"></p>
+
+<script>
+var web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:8345"));
+
+function myFunction() {
+    const coinbase = web3.eth.accounts[0];
+    document.getElementById("coin").innerHTML = "coinbase: " + coinbase;
+}
+</script>
+
+</body>
+</html>

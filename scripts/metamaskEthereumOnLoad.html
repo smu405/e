@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Using web3 API with MetaMask</title>
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.2.5/dist/web3.min.js"></script>
+    <script>
+    window.onload = function() {
+        if (ethereum) {
+            document.getElementById("metamaskInstall").innerHTML = "MetaMask is installed... " + ethereum.isMetaMask;
+        }
+        else {
+            document.getElementById("metamaskInstall").innerHTML = "MetaMask is not installed..." + ethereum.isMetaMask;
+        }
+    }
+    </script>
+</head>
+<body>
+    <p id="metamaskInstall"></p>
+</body>
+</html>

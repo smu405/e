@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="utf-8" http-equiv="encoding">
+<head>
+<script src="https://cdn.jsdelivr.net/npm/web3@1.2.5/dist/web3.min.js"></script>
+
+<script>
+window.addEventListener('load', function () {
+    console.log("listener load");
+  //Wait for loading completion to avoid race conditions with web3 injection timing.
+  if (window.ethereum) {
+    //const web3 = new Web3(window.ethereum);
+      window.web3 = new Web3(ethereum);
+    try {
+      // Request account access if needed
+      //window.ethereum.enable();
+        ethereum.enable().then(() => {
+    console.log("Ethereum enabled");
+      // Acccounts now exposed
+      //return web3;
+        })
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  // Fallback to localhost; use dev console port by default...
+  else {
+    //const provider = new Web3.providers.HttpProvider('http://127.0.0.1:8345');
+    //const web3 = new Web3(provider);
+    console.log('No web3 instance injected, ??using Local web3.');
+    //return web3;
+  }
+});
+    
+async function myFunction() {
+    console.log("myFunction called");
+    if(window.ethereum) {
+        accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+    } else {
+        accounts = await web3.eth.getAccounts();
+    }
+    document.getElementById("coin").innerHTML = "coinbase: " + accounts[0];
+}
+
+
+</script>
+</head>
+<body>
+<button onclick="myFunction()">Click me to see the coinbase^^^</button>
+<p id="coin"></p>
+
+</body>
+</html>

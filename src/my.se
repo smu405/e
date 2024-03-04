@@ -1,0 +1,11 @@
+def register(key, value):
+    # Key not yet claimed
+    if not self.storage[key]:
+        self.storage[key] = value
+        return(1)
+    else:
+        return(0)  # Key already claimed
+
+def ask(key):
+    return(self.storage[key])
+

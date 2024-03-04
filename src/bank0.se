@@ -1,0 +1,15 @@
+def init():
+    #Initialiaze the contract creator with 10000 fake dollars
+    self.storage[msg.sender] = 10000
+
+def send_currency_to(value, destination):
+    #If the sender has enough money to fund the transaction, complete it
+    if self.storage[msg.sender] >= value:
+        self.storage[msg.sender] = self.storage[msg.sender] - value
+        self.storage[destination] = self.storage[destination] + value
+        return(1)
+    return(-1)
+
+def balance_check(addr):
+    #Balance Check
+    return(self.storage[addr])

@@ -1,0 +1,41 @@
+<!doctype>
+<html>
+<head>
+<script src="https://cdn.jsdelivr.net/npm/web3@1.2.5/dist/web3.min.js"></script>
+<!-- script src="https://cdn.jsdelivr.net/npm/web3@0.20.5/dist/web3.min.js"></script -->
+<script type="text/javascript">
+    //var Web3 = require('web3');  //can be removed
+    var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8345"));
+
+    function displayHello() {
+        var web3version = web3.version;  //web3.version.api
+        //web3@0.20.x
+        //var shelloContract = web3.eth.contract([{"constant":true,"inputs":[],"name":"sayHello","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"pure","type":"function"}]);
+        //var hello = shelloContract.at("0x0d3C29cAD3c40497699e13CC34bA099E1fe426Ba");
+        //var hello=hello.sayHello.call();
+        //document.getElementById('sayhello').innerText = "The message from blockchain: " + hello;
+        //document.getElementById('web3ver').innerText = 'web3 version 0.20.x: '+web3version.api;
+        //document.getElementById('web3coinbase').innerText = 'coinbase: ' + web3.eth.coinbase;
+
+        //web3@1.2.x - can not instanciate a contract
+        var shelloContract = new web3.eth.Contract([{"constant":true,"inputs":[],"name":"sayHello","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"pure","type":"function"}],
+                                      "0x0d3C29cAD3c40497699e13CC34bA099E1fe426Ba");
+        shelloContract.methods.sayHello().call().then(function(str) {
+            document.getElementById('sayhello').innerText = "The message from blockchain: " + str;
+        });
+        document.getElementById('web3ver').innerText = '*web3 version: '+web3version;
+        web3.eth.getCoinbase().then(function(coin) {
+            document.getElementById('web3coinbase').innerText = 'coinbase: ' + coin;
+            });
+    }
+</script>
+</head>
+<body>
+    <h1>Hello</h1>
+    <button type="button" onClick="displayHello();">Display Hello</button>
+    <div></div>
+    <div id="sayhello"></div>
+    <div id="web3ver"></div>
+    <div id="web3coinbase"></div>
+</body>
+</html>

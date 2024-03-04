@@ -1,0 +1,127 @@
+<!doctype html>
+<html>
+
+<head>
+<script src="https://cdn.jsdelivr.net/npm/web3@1.2.5/dist/web3.min.js"></script>
+<script type="text/javascript">
+    //var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8345"));
+    var web3 = new Web3(new Web3.providers.WebsocketProvider("ws://localhost:8345"));
+
+    _abiArrayFromSolc = [{"inputs":[{"internalType":"bytes3[]","name":"proposalNames","type":"bytes3[]"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"_address","type":"address"},{"indexed":false,"internalType":"uint256","name":"_proposal","type":"uint256"}],"name":"Voted","type":"event"},{"inputs":[],"name":"chairperson","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getNVoted","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"proposals","outputs":[{"internalType":"bytes3","name":"name","type":"bytes3"},{"internalType":"uint256","name":"voteCount","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_address","type":"address"},{"internalType":"uint256","name":"proposal","type":"uint256"}],"name":"vote","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"voters","outputs":[{"internalType":"bool","name":"voted","type":"bool"},{"internalType":"uint256","name":"vote","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"winnerName","outputs":[{"internalType":"bytes3","name":"winnerName_","type":"bytes3"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"winningProposal","outputs":[{"internalType":"uint256","name":"winningProposal_","type":"uint256"}],"stateMutability":"view","type":"function"}];
+    var ballot = new web3.eth.Contract(_abiArrayFromSolc, '0x0D35Ab6f840fD5d3A636EdA6986308498456A764');
+    async function getVoter() {
+        //var coinbase = web3.eth.coinbase;
+        var accounts;
+        if(window.ethereum) {
+            console.log("reading from metamask");
+            accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+        } else {
+            console.log("reading not from metamask");
+            accounts = await web3.eth.getAccounts();
+        }
+        //var coinbase = await web3.eth.getCoinbase();
+        //var originalBalance = web3.eth.getBalance(coinbase).toNumber();
+        var originalBalance = await web3.eth.getBalance(accounts[0]);
+        document.getElementById('coinbase').innerText = 'voter: ' + accounts[0];
+        document.getElementById('original').innerText = 'voter balance: ' + originalBalance;        
+    }
+    async function vote() {
+        var _a = document.getElementById("voteForm").address.value;
+        var _p = document.getElementById("voteForm").proposal.value;
+        var _p=parseInt(_p);
+        //console.log("FORM VALUE is address? "+ web3.utils.isAddress(_a));
+
+        var accounts;
+        if(window.ethereum) {
+            console.log("reading from metamask");
+            accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+        } else {
+            console.log("reading not from metamask");
+            accounts = await web3.eth.getAccounts();
+        }
+        console.log(accounts);
+        //ballot.vote.sendTransaction(_a,_p,{from:web3.eth.accounts[0]},function (error, result)
+        //console.log("_a: "+ _a + "_p: " + _p + "accounts0: " + accounts[0]);
+        // ballot.methods.vote(_a,_p).send({from: accounts[0], gas:800000});
+        await ballot.methods.vote(_a,_p).send({from: accounts[0], gas:800000}, function (error, tranHash) {
+            if (!error) {
+                document.getElementById("nowVoted").innerHTML = "voted ===> "+_a+"::"+_p+"::"+tranHash;
+        //        var currentBalance = web3.eth.getBalance(coinbase).toNumber();
+        //        document.getElementById("current").innerText = 'current: ' + currentBalance;
+        //        document.getElementById("diff").innerText = 'diff:    ' + (currentBalance - originalBalance);
+            }
+        });
+        printNVoted();
+    }
+    function printNVoted() {
+        ballot.methods.getNVoted().call().then(function(n) {
+            document.getElementById("nvoted").innerText = 'how many voted: '+n;
+        });
+    }
+    function winning() {
+        //var win=ballot.winningProposal.call();
+        ballot.methods.winningProposal().call().then(function(p) {
+            document.getElementById("winning").innerText = 'winning: '+p;
+        });
+    }
+    function watchVote() {
+        //ballot.Voted().watch(function(error, result) {
+        //var event = _test.events.MyLog({fromBlock: 0}, function (error, result) {
+        ballot.events.Voted({fromBlock: 0}, function (error, result) {
+            if (!error) {
+                console.log("Event fired: " + JSON.stringify(result.returnValues));
+                var table = document.getElementById("voteTable");
+                var row = table.insertRow(0);
+                var cell1 = row.insertCell(0);
+                var cell2 = row.insertCell(1);
+                var cell3 = row.insertCell(2);
+                var cell4 = row.insertCell(3);
+                var cell5 = row.insertCell(4);
+                cell1.innerHTML = result.address;
+                cell2.innerHTML = result.blockNumber;
+                cell3.innerHTML = result.transactionHash;
+                cell4.innerHTML = result.returnValues._address;
+                cell5.innerHTML = result.returnValues._proposal;
+            }
+        });
+    }
+
+</script>
+<style>
+    table, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+</style>
+</head>
+<body>
+    <h1>Vote</h1>
+    <form id="voteForm">
+      Address: <input type="text" name="address" value="0x"><br>
+      Proposal: <input type="text" name="proposal" value="1"><br>
+    </form>
+    <button type="button" onClick="getVoter();">who votes?</button>
+    <button type="button" onClick="vote();">vote</button>
+    <button type="button" onClick="winning();">who wins?</button>
+    <button type="button" onClick="watchVote();">watch vote</button>
+    <div></div>
+    <div id="coinbase"></div>
+    <div id="original"></div>
+    <div id="current"></div>
+    <div id="diff"></div>
+    <div id="nowVoted"></div>
+    <div id="winning"></div>
+    <div id="nvoted"></div>
+    <table id="voteTable">
+        <caption>vote logs</caption>
+        <tr>
+            <th>address from</th>
+            <th>blockNumber</th>
+            <th>transactionHash</th>
+            <th>address</th>
+            <th>proposal</th>
+        </tr>
+    </table>
+    <br>
+</body>
+</html>

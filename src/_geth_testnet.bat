@@ -1,0 +1,1 @@
+geth --identity "jsl" --verbosity 3 --rpc --rpcport "8444" --rpccorsdomain "*" --port "30444" --rpcapi "db,eth,miner,net, web3" --networkid 3
